@@ -1,0 +1,91 @@
+{
+  "nodes": {
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1733328505,
+        "narHash": "sha256-NeCCThCEP3eCl2l/+27kNNK7QrwZB1IJCrXfrbv5oqU=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "ff81ac966bb2cae68946d5ed5fc4994f96d0ffec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
+    "fmway-lib": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "infuse-nix": "infuse-nix",
+        "nixpkgs": "nixpkgs",
+        "read-tree": "read-tree"
+      },
+      "locked": {
+        "lastModified": 1752579487,
+        "narHash": "sha256-OM4NKB2Oox6qwgyikXlWhctKxRrZJd1xZENkwDdvLNE=",
+        "owner": "fmway",
+        "repo": "lib",
+        "rev": "fdb057eb832913552e23ed1d1f1e93f12e51b23f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fmway",
+        "repo": "lib",
+        "type": "github"
+      }
+    },
+    "infuse-nix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1738726976,
+        "narHash": "sha256-N+u3vnK3zyXLUuDj/vr62r9tM7uarhKVCaLHWxjo/YY=",
+        "ref": "refs/heads/trunk",
+        "rev": "c8fb7397039215e1444c835e36a0da7dc3c743f8",
+        "revCount": 48,
+        "type": "git",
+        "url": "https://codeberg.org/amjoseph/infuse.nix"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/amjoseph/infuse.nix"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1744511788,
+        "narHash": "sha256-5PVswSsunWhzi6mBwOvuCCUBK+ggcB/idSWCaXvVvr8=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "022a1e186f42079dba4f00376697158e068abd79",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
+      }
+    },
+    "read-tree": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-ck7TY8bBNft80Qz8oldx+1LSVytTG9y7SLV9vT18eAo=",
+        "type": "file",
+        "url": "https://code.tvl.fyi/plain/nix/readTree/default.nix"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://code.tvl.fyi/plain/nix/readTree/default.nix"
+      }
+    },
+    "root": {
+      "inputs": {
+        "fmway-lib": "fmway-lib"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
