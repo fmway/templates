@@ -3,12 +3,13 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    fmway-nix.url = "github:fmway/fmway.nix";
+    fmway-lib.url = "github:fmway/lib";
+    fmway-lib.inputs.nixpkgs.follows = "nixpkgs";
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = { fmway-nix, ... } @ inputs: let
-    inherit (fmway-nix) lib;
+  outputs = { fmway-lib, ... } @ inputs: let
+    inherit (fmway-lib) lib;
   in lib.mkFlake {
       inherit inputs;
       specialArgs.lib = lib.optionals (lib.pathIsRegularFile ./lib/default.nix) [

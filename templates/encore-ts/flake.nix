@@ -3,15 +3,18 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    fmway-nix.url = "github:fmway/fmway.nix/master";
+    fmway-lib.url = "github:fmway/lib";
+    fmway-lib.inputs.nixpkgs.follows = "nixpkgs";
+    fmway-modules.url = "github:fmway/modules";
+    fmway-modules.inputs.fmway-lib.follows = "fmway-lib";
     flake-parts.url = "github:hercules-ci/flake-parts";
     encore.url = "github:encoredev/encore-flake";
     encore.inputs.nixpkgs.follows = "nixpkgs";
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = { fmway-nix, ... } @ inputs:
-  fmway-nix.lib.mkFlake { inherit inputs; } ({ lib, ... }: {
+  outputs = { fmway-lib, ... } @ inputs:
+  fmway-lib.lib.mkFlake { inherit inputs; } ({ lib, ... }: {
     perSystem = { pkgs, system, ... }: {
       devShells.default = pkgs.mkShellNoCC {
         buildInputs = with pkgs; [
