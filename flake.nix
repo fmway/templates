@@ -10,7 +10,7 @@
     templates = let
       dir = ./templates;
       list = with lib; attrNames (
-        filterAttrs (k: _: pathIsRegularFile "${dir}/${k}/flake.nix") (
+        filterAttrs (k: _: pathIsDirectory "${dir}/${k}") (
           builtins.readDir dir
         )
       );
@@ -19,7 +19,7 @@
       value = let
         path = "${dir}/${name}";
         description = (import "${path}/flake.nix").description or "";
-      in { inherit path description; };
+      in { inherit path; } // lib.optionalAttrs (lib.pathIsRegularFile "${path}/flake.nix") { inherit description; };
     }) list;
   };
 }
