@@ -30,16 +30,16 @@
           cargo-generate
         ];
 
-        shellHook = ''
-          if ! [ -d target ]; then
+        shellHook = /* bash */ ''
+          if ! [ -e Cargo.toml ]; then
             cargo init
-            mkdir target
 
             # add some file to gitignore
-            echo ".devenv*" >> .gitignore
-            echo "devenv.local.nix" >> .gitignore
-            echo ".direnv" >> .gitignore
-            echo ".pre-commit-config.yaml" >> .gitignore
+            ignores=( ".devenv*" "devenv.local.nix" ".direnv" ".pre-commit-config.yaml" )
+            gitignore="$(cat .gitignore 2>/dev/null)"
+            for i in "''${ignores[@]}"; do
+              echo "$gitignore" | grep "$i" &>/dev/null || echo "$i" >> .gitignore
+            done
           fi
         '';
 
