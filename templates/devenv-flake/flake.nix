@@ -12,6 +12,8 @@
     fmway-modules.url = "github:fmway/modules";
     fmway-modules.inputs.fmway-lib.follows = "fmway-lib";
     systems.url = "github:nix-systems/default";
+    devenv-root.url = "file+file:///dev/null";
+    devenv-root.flake = false;
   };
 
   outputs = inputs@{ fmway-lib, fmway-modules, ... }:
