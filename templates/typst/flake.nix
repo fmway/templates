@@ -1,110 +1,55 @@
 {
-  description = "A Typst project that uses Typst packages";
+  description = "A Typst project";
+
+  outputs = { fmway-nix, ... } @ inputs:
+    fmway-nix.lib.mkFlake { inherit inputs; } {
+      perSystem = { config, inputs', pkgs, lib, typix, system, ... }: let
+        src = typix.cleanTypstSource ./.;
+        commonArgs = {
+          typstSource = "main.typ";
+          fontPaths = [];
+          virtualPaths = [];
+        };
+        commonArgsWithSrc = commonArgs // { inherit src; };
+        build-drv = typix.buildTypstProject commonArgsWithSrc;
+        build-script = typix.buildTypstProjectLocal commonArgsWithSrc;
+        watch-script = typix.watchTypstProject commonArgs;
+      in {
+        packages.default = build-drv;
+        checks = {
+          inherit build-drv build-script watch-script;
+        };
+        devShells.default = typix.devShell {
+          inherit (commonArgs) fontPaths virtualPaths;
+          packages = with pkgs; [
+            watch-script
+            # hayagriva
+            # pandoc
+            # pandoc-lua-filters
+            # pandoc-include
+            # pandoc-tablenos
+            # pandoc-katex
+            # pandoc-imagine
+            # imagemagick
+          ];
+        };
+        apps = {
+          default = config.apps.watch;
+          build = { type = "app"; program = build-script; };
+          watch = { type = "app"; program = watch-script; };
+        };
+        _module.args.typix = inputs.typix.lib.${system};
+      };
+    };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    typix = {
-      url = "github:loqusion/typix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    flake-utils.url = "github:numtide/flake-utils";
-
-    # Example of downloading icons from a non-flake source
-    # font-awesome = {
-    #   url = "github:FortAwesome/Font-Awesome";
-    #   flake = false;
-    # };
+    fmway-nix.url = "github:fmway/fmway.nix";
+    fmway-nix.inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+    typix.url = "github:loqusion/typix";
+    typix.inputs.nixpkgs.follows = "nixpkgs";
+    systems.url = "github:nix-systems/default";
   };
-
-  outputs = inputs @ {
-    nixpkgs,
-    typix,
-    flake-utils,
-    ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-      inherit (pkgs) lib;
-
-      typixLib = typix.lib.${system};
-
-      src = typixLib.cleanTypstSource ./.;
-      commonArgs = {
-        typstSource = "main.typ";
-
-        fontPaths = [
-          # Add paths to fonts here
-          # "${pkgs.roboto}/share/fonts/truetype"
-        ];
-
-        virtualPaths = [
-          # Add paths that must be locally accessible to typst here
-          # {
-          #   dest = "icons";
-          #   src = "${inputs.font-awesome}/svgs/regular";
-          # }
-        ];
-      };
-
-      unstable_typstPackages = [
-        {
-          name = "cetz";
-          version = "0.3.4";
-          hash = "sha256-5w3UYRUSdi4hCvAjrp9HslzrUw7BhgDdeCiDRHGvqd4=";
-        }
-        # Required by cetz
-        {
-          name = "oxifmt";
-          version = "0.2.1";
-          hash = "sha256-8PNPa9TGFybMZ1uuJwb5ET0WGIInmIgg8h24BmdfxlU=";
-        }
-      ];
-
-      # Compile a Typst project, *without* copying the result
-      # to the current directory
-      build-drv = typixLib.buildTypstProject (commonArgs
-        // {
-          inherit src unstable_typstPackages;
-        });
-
-      # Compile a Typst project, and then copy the result
-      # to the current directory
-      build-script = typixLib.buildTypstProjectLocal (commonArgs
-        // {
-          inherit src unstable_typstPackages;
-        });
-
-      # Watch a project and recompile on changes
-      watch-script = typixLib.watchTypstProject commonArgs;
-    in {
-      checks = {
-        inherit build-drv build-script watch-script;
-      };
-
-      packages.default = build-drv;
-
-      apps = rec {
-        default = watch;
-        build = flake-utils.lib.mkApp {
-          drv = build-script;
-        };
-        watch = flake-utils.lib.mkApp {
-          drv = watch-script;
-        };
-      };
-
-      devShells.default = typixLib.devShell {
-        inherit (commonArgs) fontPaths virtualPaths;
-        packages = [
-          # WARNING: Don't run `typst-build` directly, instead use `nix run .#build`
-          # See https://github.com/loqusion/typix/issues/2
-          # build-script
-          watch-script
-          # More packages can be added here, like typstfmt
-          # pkgs.typstfmt
-        ];
-      };
-    });
 }
